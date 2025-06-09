@@ -20,12 +20,15 @@ if library.SetTheme then
     }
 end
 
+-- Load Window
 local window = library:Load{playerlist = true}
 window:SettingsTab(library:Watermark("WowK | dev | test | beta"))
 
--- Tabs
+-- Tabs and Sections
 local tab = window:Tab("rage")
 local sec = tab:Section{Side = "Right"}
+local fovSec = tab:Section{Side = "Right"}
+local hpSec = tab:Section{Side = "Right"}
 
 -- Helpers
 local function optToggle(name, key)
@@ -51,10 +54,13 @@ sec:Box{
     name = "Keybind", text = getgenv().WowKSilent.Keybind or "C", color = Color3.fromRGB(0, 180, 255),
     callback = function(k) getgenv().WowKSilent.Keybind = k end
 }
+sec:Dropdown{
+    name = "Target Part", content = {"Head", "Torso", "HumanoidRootPart"}, color = Color3.fromRGB(0, 180, 255),
+    callback = function(val) getgenv().WowKSilent.TargetPart = val end
+}
 
 -- FOV Controls
 local fov = getgenv().WowKSilent.FovSettings
-local fovSec = tab:Section{Side = "Right"}
 fovSec:Toggle{
     name = "Show FOV", color = Color3.fromRGB(0, 180, 255), state = fov.FovVisible,
     callback = function(val) fov.FovVisible = val end
@@ -72,7 +78,6 @@ simpleSlider(fovSec, "FOV Transparency", "FovTransparency", 0, 1, 2)
 
 -- HitPoint Controls
 local hp = getgenv().WowKSilent.HitPoint
-local hpSec = tab:Section{Side = "Right"}
 hpSec:Toggle{
     name = "Show HitPoint", color = Color3.fromRGB(0, 180, 255), state = hp.ShowHitPoint,
     callback = function(val) hp.ShowHitPoint = val end
@@ -81,6 +86,9 @@ simpleSlider(hpSec, "HitPoint Radius", "HitPointRadius", 1, 30)
 simpleSlider(hpSec, "HitPoint Thickness", "HitPointThickness", 1, 5)
 simpleSlider(hpSec, "HitPoint Transparency", "HitPointTransparency", 0, 1, 2)
 
--- Init
+-- Init and Core
 library:Init()
 loadstring(game:HttpGet("https://pastebin.com/raw/8WLaquw0"))()
+
+-- Default Target Part
+getgenv().WowKSilent.TargetPart = getgenv().WowKSilent.TargetPart or "Head"
